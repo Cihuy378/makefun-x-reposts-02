@@ -52,10 +52,15 @@ if (!Array.isArray(posts)) {
 if (posts.length > MAX_POSTS) {
   fail(`"posts" names ${posts.length} posts; at most ${MAX_POSTS} are allowed`);
 }
+const seenPosts = new Set<string>();
 for (const post of posts) {
   if (typeof post !== 'string' || !STATUS_URL.test(post)) {
     fail(`"${String(post)}" is not an X status address`);
   }
+  if (seenPosts.has(post)) {
+    fail(`"${post}" is listed twice; each post may appear only once`);
+  }
+  seenPosts.add(post);
 }
 
 mkdirSync(outputDir, { recursive: true });
